@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+APPDIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+payload="$APPDIR/usr/lib/linux-wallpaperengine"
+run_engine() {
+    export LD_LIBRARY_PATH="$payload:$APPDIR/usr/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    export PIPEWIRE_MODULE_DIR="$APPDIR/usr/lib/pipewire-0.3"
+    export SPA_PLUGIN_DIR="$APPDIR/usr/lib/spa-0.2"
+    export PIPEWIRE_CONFIG_DIR="$APPDIR/usr/share/pipewire"
+    cd -- "$payload"
+    exec "$payload/linux-wallpaperengine" "$@"
+}
+if [[ ${1:-} == --engine ]]; then shift; run_engine "$@"; fi
+if [[ ${1:-} == --help ]]; then
+    printf '%s\n' 'Wallpaper Studio: open the native wallpaper library and settings.' '--autostart starts in the tray; --pause toggles pause; --stop turns wallpaper off; --quit exits.' '--engine [options] runs the original renderer command line.'
+    exit 0
+fi
+# Use Mint Python/GTK without loading renderer libraries into the GUI process.
+exec /usr/bin/python3 "$APPDIR/usr/share/wallpaper-studio/app.py" --appdir "$APPDIR" "$@"

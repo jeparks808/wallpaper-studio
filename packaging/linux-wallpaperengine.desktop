@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Wallpaper Studio
+Comment=Browse and control your Steam Workshop wallpapers
+Exec=linux-wallpaperengine
+Icon=linux-wallpaperengine
+Terminal=false
+Categories=Graphics;
+StartupNotify=false

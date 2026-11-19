@@ -1,0 +1,7 @@
+# Built AppImage (~515 MB; rebuild with packaging/build.py). It bundles the
+# linux-wallpaperengine renderer and its assets, so it is kept out of the repo.
+*.AppImage
+*.AppImage.backup-*
+
+__pycache__/
+*.pyc

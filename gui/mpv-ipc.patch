@@ -1,0 +1,25 @@
+--- src/WallpaperEngine/VideoPlayback/MPV/GLPlayer.cpp
++++ src/WallpaperEngine/VideoPlayback/MPV/GLPlayer.cpp
+@@ -2,6 +2,7 @@
+ 
+ #include "WallpaperEngine/Logging/Log.h"
+ 
++#include <cstdlib>
+ #include <mpv/render_gl.h>
+ #include <mpv/stream_cb.h>
+ 
+@@ -223,6 +224,14 @@
+     mpv_set_option_string (this->m_handle, "profile", "fast");
+     mpv_set_option_string (this->m_handle, "untimed", this->m_untimed ? "yes" : "no");
+ 
++    // Optional private IPC endpoint used by the native desktop controller.
++    // This adapter is used only for video wallpapers by the controller.
++    if (const char* socket = std::getenv ("LWE_MPV_SOCKET")) {
++        if (mpv_set_option_string (this->m_handle, "input-ipc-server", socket) < 0) {
++            sLog.exception ("Cannot enable the wallpaper control socket");
++        }
++    }
++
+     if (mpv_initialize (this->m_handle) < 0) {
+ 	sLog.exception ("Could not initialize mpv context");
+     }
